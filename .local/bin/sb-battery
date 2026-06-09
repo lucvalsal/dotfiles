@@ -1,0 +1,67 @@
+#!/bin/sh
+
+battery_path="/sys/class/power_supply/BAT0"
+if [ ! -d "$battery_path" ]; then
+	battery_path="/sys/class/power_supply/BAT1"
+fi
+
+if [ ! -d "$battery_path" ];then
+	echo "?"
+	exit 0
+fi
+
+capacity=$(cat "$battery_path/capacity" 2>/dev/null)
+status=$(cat "$battery_path/status" 2>/dev/null)
+
+if [ -z "$capacity" ]; then
+	echo "?"
+	exit 0
+fi
+
+case "$status" in
+	"Charging")
+		icon="+"
+		;;
+	"Discharging")
+		icon="-"
+		;;
+	"Full")
+		icon="*"
+		;;
+	*)
+		icon="?"
+		;;
+esac
+
+if [ "$capacity" -le 20 ] && [ "status" = "Discharging" ]; then
+	if [ ! -f /tmp/battery_low_notified ]; then
+		notify-send -u critical "Battery" "Battery <=20%, charge now"
+		touch /tmp/battery_low_notified
+	fi
+
+	echo "$icon$capacity%"
+	echo "$icon$capacity%"
+	echo "#FF5555"
+elif [ "$capacity" -ge 80 ] && [ "status" = "Charging" ]; then
+	if [ -f /tmp/battery_80_notified ]; then
+		notify-send -u normal "Battery" "Battery charged to 80%, unplug now for battery health"
+		touch /tmp/battery_80_notified
+	fi
+	echo "$icon$capacity%"
+elif [ "$capacity" -le 20 ]; then
+	echo "$icon$capacity%"
+	echo "$icon$capacity%" 
+	echo "#FF5555"
+else
+	echo "$icon$capacity%"
+fi
+
+if [ "$capacity" -gt 20 ] && [ -f /tmp/battery_low_notified ]; then
+	rm /tmp/battery_low_notified
+fi
+if [ "$capacity" -lt 80 ] && [ -f /tmp/battery_80_notified ]; then
+	rm /tmp/battery_80_notified
+fi
+	
+	
+
