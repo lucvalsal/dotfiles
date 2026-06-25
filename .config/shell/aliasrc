@@ -4,3 +4,5 @@ alias cfa="$EDITOR $XDG_CONFIG_HOME/shell/aliasrc"
 
 # Source
 alias srz="source $ZDOTDIR/.zshrc"
+
+alias vim ="nvim"
