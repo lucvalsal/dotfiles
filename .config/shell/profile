@@ -1,0 +1,14 @@
+export GOPATH="$XDG_DATA_HOME/go"
+export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
+export EDITOR=nvim
+export VISUAL=nvim
+
+export VIMINIT="
+if has('nvim')
+  so ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/init.lua
+else
+  set nocp
+  so ${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc
+endif
+"
+
