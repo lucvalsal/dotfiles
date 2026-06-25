@@ -1,10 +1,10 @@
 #!/bin/sh
 
 if [ -f "$XDG_DATA_HOME/bg" ]; then
-	WALLPAPER=$(readlink -f "$XDG_DATA_HOME/bg")
-	[ -f "$WALLPAPER" ] && wal -i "$WALLPAPER" && xwallpaper --center "$WALLPAPER"
+    WALLPAPER=$(readlink -f "$XDG_DATA_HOME/bg")
+    [ -f "$WALLPAPER" ] && wal -i "$WALLPAPER" && xwallpaper --center "$WALLPAPER"
 else
-	wal -R
+    wal -R
 fi
 
 xrdb -merge ~/.cache/wal/colors.Xresources
