@@ -1,3 +1,5 @@
+# Source shell profile
+[ -f "$XDG_CONFIG_HOME/shell/profile" ] && source "$XDG_CONFIG_HOME/shell/profile"
 # Source global shell alias
 [ -f "$XDG_CONFIG_HOME/shell/aliasrc" ] && source "$XDG_CONFIG_HOME/shell/aliasrc"
 
@@ -67,9 +69,11 @@ bindkey -s '^f' '^Ufzfe\n'
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
+bindkey -s '^t' '^Utmux_mode\n'
+
 # Completion dump
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 
-source "$PLUGINS_DIR/zsh-syntax/highlighting/zsh-syntax-highlighting.zsh"
+source "$PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
