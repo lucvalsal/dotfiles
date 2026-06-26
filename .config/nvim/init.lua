@@ -24,8 +24,8 @@ vim.opt.smd = false
 
 local undodir = vim.fn.expand("$XDG_STATE_HOME/nvim/undo/")
 if
-		vim.fn.isdirectory(undodir) == 0 
-then 
+		vim.fn.isdirectory(undodir) == 0
+then
 		vim.fn.mkdir(undodir, "p")
 end
 
@@ -44,7 +44,7 @@ vim.opt.hidden = true
 vim.opt.errorbells = false
 vim.opt.backspace = "indent,eol,start"
 vim.opt.autochdir = false
-vim.opt.iskeyword:append("-") 
+vim.opt.iskeyword:append("-")
 vim.opt.path:append("**")
 vim.opt.selection = "inclusive"
 vim.opt.mouse = "a"
@@ -70,12 +70,12 @@ local cached_branch = ""
 local last_check = 0
 local function git_branch()
 	local now = vim.loop.now()
-	if now - last_check > 5000 then 
+	if now - last_check > 5000 then
 		cached_branch = vim.fn.system("git branch --show-current 2>/dev/null | tr -d '\n'")
 		last_check = now
 	end
 	if cached_branch ~= "" then
-		return "\u{e00c}" .. " " .. cached_branch 
+		return "\u{e00c}" .. " " .. cached_branch
 	end
 	return "NULL"
 end
@@ -102,25 +102,25 @@ local function file_size()
 	else
 		size_str = string.format("%.1fM", size / 1024 / 1024)
 	end
-	return "\u{e1cf}" .. " " .. size_str .. " " 
+	return "\u{e1cf}" .. " " .. size_str .. " "
 end
 
 local function mode_icon()
 	local mode = vim.fn.mode()
 	local modes = {
-		n = " \u{e1ec} NORMAL", 
-		i = " \u{e26f} INSERT", 
-		v = " \u{e26b} VISUAL", 
-		V = " \u{e26b} V-LINE", 
-		["\22"] = " \u{e26b} V-BLOCK", 
-		c = " \u{e1ec} COMMAND", 
-		s = " \u{e0b1} SELECT", 
-		S = " \u{e0b1} S-LINE", 
-		["\19"] = " \u{e0b1} S-BLOCK", 
-		R = " \u{e1e5} REPLACE", 
-		r = " \u{e1e5} REPLACE", 
-		["!"] = " \u{e1ef} SHELL", 
-		t = " \u{e1ec} TERMINAL", 
+		n = " \u{e1ec} NORMAL",
+		i = " \u{e26f} INSERT",
+		v = " \u{e26b} VISUAL",
+		V = " \u{e26b} V-LINE",
+		["\22"] = " \u{e26b} V-BLOCK",
+		c = " \u{e1ec} COMMAND",
+		s = " \u{e0b1} SELECT",
+		S = " \u{e0b1} S-LINE",
+		["\19"] = " \u{e0b1} S-BLOCK",
+		R = " \u{e1e5} REPLACE",
+		r = " \u{e1e5} REPLACE",
+		["!"] = " \u{e1ef} SHELL",
+		t = " \u{e1ec} TERMINAL",
 	}
 	return modes[mode]  or (" \u{e0b3} " .. mode)
 end
@@ -163,4 +163,158 @@ setup_dynamic_statusline()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.keymap.set("n", "j", function()
+	return vim.v.count == 0 and "gj" or "j"
+end, { expr = true, silent = true, desc = "Down (wrap-aware)" })
+vim.keymap.set("n", "k", function()
+	return vim.v.count == 0 and "gk" or "k"
+end, { expr = true, silent = true, desc = "Up (wrap-aware)" })
 
+vim.keymap.set("n", "<leader>c", ":nohlsearch<CR>", { desc = "Clear search highlights" })
+
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+
+
+vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
+vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
+
+vim.keymap.set("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
+
+vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { desc = "Move to left window/pane" })
+vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Move to bottom window/pane" })
+vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Move to top window/pane" })
+vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Move to right window/pane" })
+
+vim.keymap.set("n", "<leader>sv", ":vsplit<CR>", { desc = "Split window vertically" })
+vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split window horizontally" })
+vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
+vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease window height" })
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
+vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
+
+
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+
+vim.keymap.set("n", "<leader>pa", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	print("file:", path)
+end, { desc = "Copy full file path" })
+
+vim.keymap.set("n", "<leader>td", function()
+	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "Toggle diagnostics" })
+
+-- AUTOCMDS
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = augroup,
+	callback = function()
+		vim.hl.on_yank()
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+	group = augroup,
+	desc = "Restore last cursor position",
+	callback = function()
+		if vim.o.diff then
+			return
+		end
+
+		local last_pos = vim.api.nvim_buf_get_mark(0, '"')
+		local last_line = vim.api.nvim_buf_line_count(0)
+
+		local row = last_pos[1]
+		if row < 1 or row > last_line then
+			return
+		end
+
+		pcall(vim.api.nvim_win_set_cursor, 0, last_pos)
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup,
+	pattern = { "markdown", "text", "gitcommit" },
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.linebreak = true
+		vim.opt_local.spell = true
+	end,
+})
+
+-- PLUGINS (vim.pack)
+vim.pack.add({
+	"https://www.github.com/echasnovski/mini.nvim",
+	"https://www.github.com/ibhagwan/fzf-lua",
+	"https://www.github.com/nvim-tree/nvim-tree.lua",
+})
+
+local function packadd(name)
+	vim.cmd("packadd " .. name)
+end
+packadd("mini.nvim")
+packadd("fzf-lua")
+packadd("nvim-tree.lua")
+
+-- PLUGIN CONFIGS
+require("nvim-tree").setup({
+	view = {
+		width = 35,
+	},
+	filters = {
+		dotfiles = false,
+	},
+	renderer = {
+		group_empty = true,
+	},
+})
+vim.keymap.set("n", "<leader>e", function()
+	require("nvim-tree.api").tree.toggle()
+end, { desc = "Toggle NvimTree" })
+
+-- fzf-lua keymaps
+require("fzf-lua").setup({})
+
+vim.keymap.set("n", "<leader>ff", function()
+	require("fzf-lua").files()
+end, { desc = "FZF Files" })
+vim.keymap.set("n", "<leader>fg", function()
+	require("fzf-lua").live_grep()
+end, { desc = "FZF Live Grep" })
+vim.keymap.set("n", "<leader>fb", function()
+	require("fzf-lua").buffers()
+end, { desc = "FZF Buffers" })
+vim.keymap.set("n", "<leader>fh", function()
+	require("fzf-lua").help_tags()
+end, { desc = "FZF Help Tags" })
+vim.keymap.set("n", "<leader>fx", function()
+	require("fzf-lua").diagnostics_document()
+end, { desc = "FZF Diagnostics Document" })
+vim.keymap.set("n", "<leader>fX", function()
+	require("fzf-lua").diagnostics_workspace()
+end, { desc = "FZF Diagnostics Workspace" })
+
+require("mini.ai").setup({})
+require("mini.comment").setup({})
+require("mini.move").setup({})
+require("mini.surround").setup({})
+require("mini.cursorword").setup({})
+require("mini.indentscope").setup({})
+require("mini.pairs").setup({})
+require("mini.trailspace").setup({})
+require("mini.bufremove").setup({})
+require("mini.notify").setup({})
+require("mini.icons").setup({})
